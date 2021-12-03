@@ -29,8 +29,8 @@ public class MissionSelection : MonoBehaviour
     {
         status.text = "Открывается проводник....";
        
-        ReadFile("C:\\Dev\\LD\\drone-study\\облёт объектов.json");
-        return;
+        /*ReadFile("C:\\Dev\\LD\\drone-study\\облёт объектов.json");
+        return;*/
 
 
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Запись Миссии", ".json"));
@@ -69,5 +69,9 @@ public class MissionSelection : MonoBehaviour
     void Update()
     {
         
+    }
+    public void Exit()
+    {
+        Application.Quit();
     }
 }
