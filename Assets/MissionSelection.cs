@@ -28,6 +28,11 @@ public class MissionSelection : MonoBehaviour
     public void ShowOpenPanel()
     {
         status.text = "Открывается проводник....";
+       
+        ReadFile("C:\\Dev\\LD\\drone-study\\облёт объектов.json");
+        return;
+
+
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Запись Миссии", ".json"));
 
         FileBrowser.ShowLoadDialog((paths) => { 

@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     {
         playControl.SetActive(true);
     }
-    float smooth = 5.0f;
+    float smooth = 0.1f;
     public Vector3 startMarker;
     public Vector3 endMarker;
     // Movement speed in units per second.
@@ -39,14 +39,15 @@ public class Player : MonoBehaviour
 
     // Total distance between the markers.
     private float journeyLength;
-
+    private bool isFLyingToPoint = false;
     // Update is called once per frame
+    float speed = 7f;
     void Update()
     {
         if (isPlaying && journeyLength != 0)
         {
             // Distance moved equals elapsed time times speed..
-            float speed = journeyLength / timeDeltaForMove * 2;
+            
             float distCovered = (Time.time - startTime) * speed;
 
             // Fraction of journey completed equals current distance divided by total distance.
@@ -55,14 +56,28 @@ public class Player : MonoBehaviour
             // Set our position as a fraction of the distance between the markers.
             transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
 
-            if (Vector3.Distance(transform.position, endMarker) < 1f)
+            if (Vector3.Distance(transform.position, endMarker) <= 0.01)
             {
-                startTime = 0;
+                isFLyingToPoint = false;
             }
+            
         }
+        else
+        {
+            isFLyingToPoint = false;
+        }
+    }
+    public void SpeedUp()
+    {
+        speed += 0.1f;
+    }
+    public void SpeedDown()
+    {
+        speed -= 0.1f;
     }
     void applyDroneState(StaticClass.DroneState state, float timeDelta)
     {
+        isFLyingToPoint = true;
         timeDeltaForMove = timeDelta;
         startMarker = transform.position;
         endMarker = new Vector3(state.lat, state.alt, state.lon);
@@ -71,13 +86,22 @@ public class Player : MonoBehaviour
         startTime = Time.time;
        
         
-        Quaternion targetAngle = Quaternion.Euler(state.row, state.yaw, state.pitch);
+        Quaternion targetAngle = Quaternion.Euler(state.row, state.pitch, state.yaw);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * smooth);
-        StaticClass.droneState.droneOn = state.droneOn;
-        StaticClass.droneState.enginesOn = state.enginesOn;
-        droneController.switchPropellers();
+        //transform.Rotate(0, state.pitch, 0);
+        if (StaticClass.droneState.droneOn != state.droneOn ||
+            StaticClass.droneState.enginesOn != state.enginesOn)
+        {
+            StaticClass.droneState.droneOn = state.droneOn;
+            StaticClass.droneState.enginesOn = state.enginesOn;
+            MissionManager.reportAction(MissionManager.ItemType.DoAction, StaticClass.droneState.droneOn ? 0 : 1);
+            if (!StaticClass.droneState.droneOn)
+            {
+                StaticClass.droneState.enginesOn = false;
+            }
+            droneController.switchPropellers();
 
-
+        }
     }
     bool isPlaying = false;
     public void StartPLay()
@@ -109,13 +133,18 @@ public class Player : MonoBehaviour
             foreach (StaticClass.DroneState state in droneStates)
             {
                 double timeDelta = state.time - lastCommandTime;
-                yield return new WaitForSeconds((float)timeDelta*2);
+                //yield return new WaitForSeconds((float)timeDelta*2);
                 
                 if (!isPlaying)
                 {
                     break;
                 }
+                
                 applyDroneState(state, (float)timeDelta);
+                while (isFLyingToPoint)
+                {
+                    yield return new WaitForSeconds((float)0.1);
+                }
                 lastCommandTime = Time.realtimeSinceStartup;
 
             }
