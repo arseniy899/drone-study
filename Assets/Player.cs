@@ -22,31 +22,64 @@ public class Player : MonoBehaviour
         droneController = drone.GetComponent<DroneControlC>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
     public void ShowPLayControl()
     {
         playControl.SetActive(true);
     }
     float smooth = 5.0f;
-    void applyDroneState(StaticClass.DroneState state)
+    public Vector3 startMarker;
+    public Vector3 endMarker;
+    // Movement speed in units per second.
+    //public float speed = 1.0F;
+
+    // Time when the movement started.
+    private float startTime;
+    private float timeDeltaForMove;
+
+    // Total distance between the markers.
+    private float journeyLength;
+
+    // Update is called once per frame
+    void Update()
     {
-        drone.transform.position = new Vector3(state.lat, state.alt, state.lon);
-        Quaternion target = Quaternion.Euler(state.row, state.pitch, state.yaw);
-        drone.transform.rotation = Quaternion.Slerp(drone.transform.rotation, target, Time.deltaTime * smooth);
+        if (isPlaying)
+        {
+            // Distance moved equals elapsed time times speed..
+            float speed = journeyLength / timeDeltaForMove;
+            float distCovered = (Time.time - startTime) * speed;
+
+            // Fraction of journey completed equals current distance divided by total distance.
+            float fractionOfJourney = distCovered / journeyLength;
+
+            // Set our position as a fraction of the distance between the markers.
+            transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
+        }
+    }
+    void applyDroneState(StaticClass.DroneState state, float timeDelta)
+    {
+        timeDeltaForMove = timeDelta;
+        startMarker = drone.transform.position;
+        endMarker = new Vector3(state.lat, state.alt, state.lon);
+        journeyLength = Vector3.Distance(startMarker, endMarker);
+        
+        startTime = Time.time;
+       
+        
+        Quaternion targetAngle = Quaternion.Euler(0, -state.yaw, state.pitch);
+        drone.transform.rotation = Quaternion.Slerp(drone.transform.rotation, targetAngle, Time.deltaTime * smooth);
         StaticClass.droneState.droneOn = state.droneOn;
         StaticClass.droneState.enginesOn = state.enginesOn;
         droneController.switchPropellers();
 
 
     }
-    bool isPlaying = true;
+    bool isPlaying = false;
     public void StartPLay()
     {
         //drone.GetComponent<Rigidbody>().isKinematic = true;
+        startMarker = drone.transform.position;
+        endMarker = startMarker;
         StartCoroutine(PlayerCoroutine());
         isPlaying = true;
         startPlay.gameObject.SetActive(false);
@@ -70,7 +103,7 @@ public class Player : MonoBehaviour
             {
                 break;
             }
-            applyDroneState(state);
+            applyDroneState(state, (float)timeDelta);
             lastCommandTime = Time.realtimeSinceStartup;
 
         }
