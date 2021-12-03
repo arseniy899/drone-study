@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3026402958008844640}
   - component: {fileID: 8553244934157276633}
   - component: {fileID: 1114847443573276505}
-  - component: {fileID: 3739151615020342637}
   m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
@@ -80,20 +79,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!136 &3739151615020342637
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 908081659847290635}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &4771493918491084235
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,6 +364,9 @@ MonoBehaviour:
   Drone: {fileID: 4771493918494393561}
   RButton: {fileID: 0}
   LButton: {fileID: 0}
+  gameOverBanner: {fileID: 0}
+  explosionPrefab: {fileID: 7123735088366128784, guid: d35ce7b534570d9478e78231b14512a4,
+    type: 3}
   ForwardBackward: 15
   Tilt: 7
   FlyLeftRight: 7
@@ -402,7 +390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc36bb816dae47544a0ba3839da9f4b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMissionSelected: 0
+  currentMissionSelected: 2
   status: {fileID: 0}
   replayMission: {fileID: 0}
 --- !u!114 &952177908331572953
@@ -422,6 +410,8 @@ MonoBehaviour:
   stopPlay: {fileID: 0}
   drone: {fileID: 0}
   droneStates: []
+  startMarker: {x: 0, y: 0, z: 0}
+  endMarker: {x: 0, y: 0, z: 0}
 --- !u!1 &4771493918491172051
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,7 +745,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 0.019607844}
+  m_BackGroundColor: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 0.03529412}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -766,18 +756,18 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 0.3
-    height: 0.4
+    width: 0.25
+    height: 0.3
   near clip plane: -0.54
   far clip plane: 1000
   field of view: 60
   orthographic: 1
   orthographic size: 70
-  m_Depth: 0
+  m_Depth: 6.03
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 256
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3

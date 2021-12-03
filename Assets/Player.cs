@@ -43,10 +43,10 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isPlaying)
+        if (isPlaying && journeyLength != 0)
         {
             // Distance moved equals elapsed time times speed..
-            float speed = journeyLength / timeDeltaForMove;
+            float speed = journeyLength / timeDeltaForMove * 2;
             float distCovered = (Time.time - startTime) * speed;
 
             // Fraction of journey completed equals current distance divided by total distance.
@@ -54,20 +54,25 @@ public class Player : MonoBehaviour
 
             // Set our position as a fraction of the distance between the markers.
             transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
+
+            if (Vector3.Distance(transform.position, endMarker) < 1f)
+            {
+                startTime = 0;
+            }
         }
     }
     void applyDroneState(StaticClass.DroneState state, float timeDelta)
     {
         timeDeltaForMove = timeDelta;
-        startMarker = drone.transform.position;
+        startMarker = transform.position;
         endMarker = new Vector3(state.lat, state.alt, state.lon);
         journeyLength = Vector3.Distance(startMarker, endMarker);
         
         startTime = Time.time;
        
         
-        Quaternion targetAngle = Quaternion.Euler(0, -state.yaw, state.pitch);
-        drone.transform.rotation = Quaternion.Slerp(drone.transform.rotation, targetAngle, Time.deltaTime * smooth);
+        Quaternion targetAngle = Quaternion.Euler(state.row, state.yaw, state.pitch);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * smooth);
         StaticClass.droneState.droneOn = state.droneOn;
         StaticClass.droneState.enginesOn = state.enginesOn;
         droneController.switchPropellers();
@@ -78,12 +83,14 @@ public class Player : MonoBehaviour
     public void StartPLay()
     {
         //drone.GetComponent<Rigidbody>().isKinematic = true;
-        startMarker = drone.transform.position;
+        startMarker = transform.position;
         endMarker = startMarker;
-        StartCoroutine(PlayerCoroutine());
         isPlaying = true;
+        StartCoroutine(PlayerCoroutine());
+        
         startPlay.gameObject.SetActive(false);
         stopPlay.gameObject.SetActive(true);
+        MissionManager.showNextCheckpoint();
     }
     public void StopPlay()
     {
@@ -94,19 +101,26 @@ public class Player : MonoBehaviour
     }
     IEnumerator PlayerCoroutine()
     {
-        double lastCommandTime = droneStates[0].time;
-        foreach (StaticClass.DroneState state in droneStates)
+        if (droneStates.Count > 0)
         {
-            double timeDelta = state.time - lastCommandTime;
-            yield return new WaitForSeconds((float)timeDelta);
-            if (!isPlaying)
+            double lastCommandTime = droneStates[0].time;
+            //StaticClass.DroneState lastState = droneStates[0];
+            transform.position = new Vector3(droneStates[0].lat, droneStates[0].alt, droneStates[0].lon);
+            foreach (StaticClass.DroneState state in droneStates)
             {
-                break;
-            }
-            applyDroneState(state, (float)timeDelta);
-            lastCommandTime = Time.realtimeSinceStartup;
+                double timeDelta = state.time - lastCommandTime;
+                yield return new WaitForSeconds((float)timeDelta*2);
+                
+                if (!isPlaying)
+                {
+                    break;
+                }
+                applyDroneState(state, (float)timeDelta);
+                lastCommandTime = Time.realtimeSinceStartup;
 
+            }
         }
         StopPlay();
+    
     }
 }

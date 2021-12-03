@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Simulator-First fly.unity
     guid: f247357e0ec2c4d4d8a4c086d2c99539
+  - enabled: 1
+    path: Assets/Scenes/Simulator-Complex.unity
+    guid: 45c04c57831878849b3c08bb31feebf4
   m_configObjects: {}

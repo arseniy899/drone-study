@@ -5,9 +5,12 @@ public class DroneControlC : MonoBehaviour {
 	public Rigidbody Drone;
 	public GameObject RButton;
 	public GameObject LButton;
+	public GameObject gameOverBanner;
+	public GameObject explosionPrefab;
 
-		
-	   /*Speed*/public int ForwardBackward = 50; 
+
+	/*Speed*/
+	public int ForwardBackward = 50; 
 	   /*Speed*/public int Tilt = 50; 
 	   /*Speed*/public int FlyLeftRight = 50;  
 	   /*Speed*/public int UpDown = 50; 
@@ -74,7 +77,7 @@ public class DroneControlC : MonoBehaviour {
 			Drone.AddForce(0, 9.80665f, 0);//drone not lose height very fast, if you want not to lose height al all change 9 into 9.80665 
 		if(Mobile== false && StaticClass.droneState.droneOn)
 		{
-			if(Input.GetKeyDown(KeyCode.Space)){
+			if(Input.GetKeyDown("space")){
 				StaticClass.droneState.enginesOn = !StaticClass.droneState.enginesOn;
 				switchPropellers();
 				if (StaticClass.droneState.enginesOn)
@@ -140,6 +143,33 @@ public class DroneControlC : MonoBehaviour {
 		Debug.Log("Drone power is " + isOn);
         StaticClass.droneState.droneOn = !StaticClass.droneState.droneOn;
 		MissionManager.reportAction(MissionManager.ItemType.DoAction, StaticClass.droneState.droneOn ? 0 : 1);
+		if (!StaticClass.droneState.droneOn)
+        {
+			StaticClass.droneState.enginesOn = false;
+			switchPropellers();
+
+		}
+	}
+
+	public void droneCrashed()
+    {
+		DroneStateLogger.sendRecordedData();
+		Debug.Log("Drone smashed");
+		Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+		List <GameObject> destroyable = new List<GameObject>(GameObject.FindGameObjectsWithTag("Destroyable")).FindAll(g => g.transform.IsChildOf(this.transform));
+		foreach (GameObject obj in destroyable)
+		{
+			Destroy(obj);
+		}
+		StartCoroutine(CoroutineForCrashAnim());
 
 	}
+
+	IEnumerator CoroutineForCrashAnim()
+	{
+		yield return new WaitForSeconds(2f);
+		gameOverBanner.SetActive(true);
+		
+	}
+
 }

@@ -131,13 +131,13 @@ public class MissionManager : MonoBehaviour
         }
     }
     
-    string getTaskDesc(MissionItem item)
+    string getTaskDesc(MissionItem item, int index)
     {
         string desc = "";
         switch (item.type)
         {
             case ItemType.ReachCheckPoint:
-                desc = "Достичь цели";
+                desc = "Достичь цели №"+index;
             break;
             case ItemType.DoAction:
                 desc = string.Format("Действие:");
@@ -163,7 +163,7 @@ public class MissionManager : MonoBehaviour
         {
             desc += "[ Пауза " + item.wait +" с]";
         }
-        //desc += "("+ (item.isDone ? "+" : "-") +")";
+        desc += "("+ (item.isDone ? "+" : "-") +")";
         return desc;
     }
     // Update is called once per frame
@@ -172,11 +172,12 @@ public class MissionManager : MonoBehaviour
         string descAll = "";
         if (currentMission != null)
         {
-            
+            int index = 0;
             foreach (MissionItem item in currentMission)
             {
                 if(!item.isDone)
-                    descAll += getTaskDesc(item) + "\n";
+                    descAll += getTaskDesc(item, index) + "\n";
+                index++;
             }
         }
         else
@@ -259,7 +260,7 @@ public class MissionManager : MonoBehaviour
         }
 
     }
-    private static void showNextCheckpoint() {
+    public static void showNextCheckpoint() {
         checkMissionComplete();
         foreach (MissionItem item in currentMission)
         {
@@ -291,7 +292,10 @@ public class MissionManager : MonoBehaviour
     }
     public void missionReset()
     {
-        Awake();
-        showNextCheckpoint();
+        //Awake();
+        //showNextCheckpoint();
+        StaticClass.droneState = new StaticClass.DroneState();
+        StaticClass.droneStates = new List<StaticClass.DroneState>();
+        Scene scene = SceneManager.GetActiveScene(); SceneManager.LoadScene(scene.name);
     }
 }
