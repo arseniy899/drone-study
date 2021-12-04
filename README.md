@@ -1,7 +1,3 @@
-# Структура проектов:
-- Симулятор. Ветка - [simulator](https://github.com/arseniy899/drone-study/tree/simulator). Стэк - Unity3D, C#. 
-<<<<<<< HEAD
-
 ### Инструкция по разворачиванию серверной части приложения
 
 #### Предварительные требования для разворачивания:
@@ -69,7 +65,3 @@ Object -> Create -> Database, после чего откроется форма 
 ### Основные доступные ссылки
 - http://127.0.0.1:8000/admin - панель администрирования серверной части приложения
 - http://127.0.0.1:8000/swaggewr - документация к API в swagger
-=======
-- Бэкенд. Ветка - [backend](https://github.com/arseniy899/drone-study/tree/backend). Стэк - Python, Django. 
-- Фронт. Ветка - [frontend](https://github.com/arseniy899/drone-study/tree/frontend). Стэк - HTML, JS, CSS. 
->>>>>>> 2bb3cd646480cd2b410038b0176af1647ce1b5b4
