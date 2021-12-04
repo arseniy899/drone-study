@@ -11,6 +11,14 @@ class QuestionAnswersSerializer(serializers.ModelSerializer):
         fields = ('name', 'is_correct')
 
 
+class QuestionListSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(slug_field='name', read_only=True)
+
+    class Meta:
+        model = Question
+        fields = ('id', 'short_name', 'category', )
+
+
 class QuestionSerializer(serializers.ModelSerializer):
     answers = QuestionAnswersSerializer(read_only=True, many=True)
     category = serializers.SlugRelatedField(slug_field='name', read_only=True)
