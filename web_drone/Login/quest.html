@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Menu</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+</head>
+<body id = "body">
+<div class = "wrap1"> 
+  <div class = "blank">
+	  <h2 class="main-form-title" id="question" >Какие параметры у вас вызывают сомнения?</h2>
+	<h2 class="main-form-title" id="question" ></h2>
+      <ul>
+        <li>
+
+          <button type="text" name="answer" id="a" class = "answer" onClick="decide('a')"> </button>
+
+        </li>
+
+        <li>
+
+          <button type="text" name="answer" id="b" class = "answer" onClick="decide('b')"> </button>
+
+        </li>
+
+        <li>
+
+          <button type="text" name="answer" id="c" class = "answer" onClick="decide('c')"> </button> 
+
+        </li>
+
+        <li>
+          <button type="text" name="answer" id="d" class = "answer" onClick="decide('d')"> </button>
+
+        </li>
+		  <li>
+          <div type="text" id="e" class = "main-form-title" ></div>
+        </li>
+
+      </ul>
+	  
+<!--
+	  <div style="padding-top:20px;">
+    <button  id="submit" ></button>
+			</div>
+-->
+	  
+	</div>
+  <div class = "picture">
+	<button style="position: absolute; display: block; background: rgba(0,0,0,0); border-radius: 5px; width: 5%; height: 5%; margin-left: 85.7%; margin-top: 60.4%;" onClick="loadQuiz()"></button>
+	<img src="phone.jpg">
+	</div>
+	 <a type="text" name="answer" id="e" class = "answer" href="menu.html">Назад в меню</a>
+</div>
+	<script src="js/main4.js"></script>
+</body>
+</html>
