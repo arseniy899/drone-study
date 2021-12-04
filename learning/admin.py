@@ -1,5 +1,5 @@
 from django.contrib import admin
-from learning.models import Test, LearningResults
+from learning.models import Test, LearningResults, UserTestAnswers, TestQuestion
 from django.utils.translation import gettext_lazy as _
 
 
@@ -9,23 +9,26 @@ class TestQuestionsInline(admin.TabularInline):
 
 
 class TestAdmin(admin.ModelAdmin):
-    fields = ('name', )
+    fields = ('name', 'description')
     list_display = ('name',)
     inlines = [TestQuestionsInline]
 
 
+class UserTestAnswersInline(admin.TabularInline):
+    fields = ('test_question', 'answer_correctly', )
+    model = UserTestAnswers
+    can_delete = False
+    extra = 0
+
+
 class LearningResultsAdmin(admin.ModelAdmin):
-    list_display = ('test_name',)
+    fields = ('test', 'users')
+    list_display = ('test_name', 'users')
+    inlines = [UserTestAnswersInline]
 
     @admin.display(description=_('Название теста'))
     def test_name(self, obj):
         return obj.test.name
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
 
 
 admin.site.register(Test, TestAdmin)
