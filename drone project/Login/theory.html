@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Menu</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+
+</head>
+<body>
+	
+	
+	<div class = "page">
+	<div class = "container">
+		
+		<h2 class="main-form-title p-b-51" >Теория</h2>
+      <ul>
+        
+		 <li>
+			 <img class="image" id="image" src="images/img1.jpg" onClick="imgsrc();">
+			 	 <script language="javascript">
+        var i=0;
+        var image=document.getElementById("image");
+        // Добавьте свои картинки в массив через запятую
+        var imgs=new Array('images/ed1.jpg','images/ed2.jpg','images/ed3.jpg');
+         function imgsrc() {
+            i++;
+			if (i == imgs.length) {i=0;}
+            image.src=imgs[i];
+        }
+    </script>
+			 </li>
+ 
+        <li>
+				<div style="padding-top:20px;">
+    <button class = "login-form-btn" onClick="imgsrc();" >Следующая страница</button>
+			</div>
+        </li>
+		  
+ <li>
+					<div style="padding-top:20px;">
+    <a class = "login-form-btn" href="menu.html" >Назад в меню</a>
+			</div>
+        </li>
+		  
+      </ul>
+		
+		
+	</div>
+		</div>
+	
+	
+	
+	<script src="script.js"></script>
+</body>
+</html>
